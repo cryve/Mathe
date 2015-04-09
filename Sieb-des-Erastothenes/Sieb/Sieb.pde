@@ -1,5 +1,5 @@
 /*
-    Primzahlen Finden mit dem Sieb
+    Primzahlen Finden mit dem  Sieb des Erastothenes
 
     By JanO MnemoniX
 */
@@ -11,16 +11,16 @@ int start = 2;
 int erg = 0;
 boolean blinck = true;
 // ------------------------------------------------------------ Settings
-int summe = 40000;
-int linebreak = 250;
+int summe = 1200000;
+int linebreak = 1567;
 
-int multX = 5;
-int multY = 5;
+int multX = 1;
+int multY = 1;
 int movX = 15;
 int movY = 40;
 
-int numSizeX = 5;
-int numSizeY = 5;
+int numSizeX = 1;
+int numSizeY = 1;
 
 boolean txt = false;
 color txtclr = color(0);
@@ -34,10 +34,11 @@ color normNoch = color( 50,  0, 0);
 color pter1    = color(255,255,  0);
 color pter2    = color(  0,  0,255);
 
-boolean strokes = true;
+boolean strokes = false;
 
-boolean animation = true;
+boolean animation = false;
 int startAnimationAt = 2;
+
 boolean statusBar = true;
 
 // ------------------------------------------------------------ Setup
@@ -90,6 +91,7 @@ void draw(){
     textSize(15);
     text("Position: "+pointer+" von "+summe+". Animation läuft: "+animation, 25, 23);
   }
+  
   if(animation){
     //drawNrs2();
     
@@ -122,7 +124,7 @@ void draw(){
       
       drawNrs();
       //if(pointer >= 17)frameRate(60);
-      if(pointer*100 >= summe){ /////////////////////////// ???????????????????????????????
+      if(pointer*100 >= summe){    ///////////////////////////  ???????????????????????????????
         animation = false;
         println("ani aus!!!!");
       }
@@ -176,7 +178,31 @@ color nrColor(boolean prim){
   if(prim) return color(0,145+ran,145+ran);
   else     return color(0, 15+ran, 15+ran);
 }
-
+// ------------------------------------------------------------ Presets
+void pre1200T(){
+  summe = 1200000;
+  linebreak = 1567;
+  
+  multX = 1;
+  multY = 1;
+  
+  numSizeX = 1;
+  numSizeY = 1;
+  
+  prim     = color(0,150,150);
+  norm     = color(0, 50, 50);
+  
+  normNeu  = color(255, 50, 0);
+  normNoch = color( 50,  0, 0);
+  
+  pter1    = color(255,255,  0);
+  pter2    = color(  0,  0,255);
+  
+  strokes = false;
+  
+  animation = false;
+  startAnimationAt = 2;
+}
 
 
 
