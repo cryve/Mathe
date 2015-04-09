@@ -43,6 +43,10 @@ boolean statusBar = true;
 
 // ------------------------------------------------------------ Setup
 void setup(){
+  // ===== PRESETS =====
+  // pre1200T();
+  
+  
   size(1600, 900);
   background(10);
   if(!strokes) noStroke();
@@ -172,7 +176,7 @@ void drawNrs2(){
 }
   
 color nrColor(boolean prim){
-  int ran = (int) random(20);
+  int ran = 5;// = (int) random(20);
 //  color prim     = color(0,150,150);
 //  color norm     = color(0, 50, 50);
   if(prim) return color(0,145+ran,145+ran);
