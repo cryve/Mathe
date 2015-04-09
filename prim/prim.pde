@@ -4,6 +4,7 @@
     By JanO MnemoniX
 */
 boolean[] zahlen;
+boolean[] zahlen2;
 int pointer = 2;
 int tmpPointer = 1;
 int start = 2;
@@ -36,7 +37,7 @@ color pter2    = color(  0,  0,255);
 boolean strokes = true;
 
 boolean animation = true;
-int startAnimationAt = 7;
+int startAnimationAt = 2;
 boolean statusBar = true;
 
 // ------------------------------------------------------------ Setup
@@ -48,10 +49,12 @@ void setup(){
   
   frameRate(1200);
   
-  zahlen = new boolean[summe];
+  zahlen  = new boolean[summe];
+  zahlen2 = new boolean[summe];
   
   for (int i = 0 ; i < zahlen.length ; i++){
     zahlen[i] = true;
+    zahlen2[i] = false;
   }
   
   zahlen[0] = false;
@@ -79,31 +82,31 @@ void setup(){
 }
 // ------------------------------------------------------------ Draw
 void draw(){
+  
   if(statusBar){
     fill(color(0,50,50));
-    rect(15, 5, 200, 25, 7);
+    rect(15, 5, 400, 25, 7);
     fill(color(0,150,150));
     textSize(15);
-    text("Pointer-Prim: "+pointer, 25, 25);
+    text("Position: "+pointer+" von "+summe+". Animation läuft: "+animation, 25, 23);
   }
   if(animation){
-//    noStroke();
-//    if(blinck)fill(pter1);
-//    else fill(pter2);
-    fill(pter19);
+    //drawNrs2();
+    
+    fill(pter1);
     drawNr(pointer);
-//    blinck = !blinck;
-//    if(strokes) stroke(0);
 
     tmpPointer++;
     erg = pointer*tmpPointer;
+    
     if(erg < summe){
       
-      if(zahlen[erg]) fill(normNeu);
-      else fill(normNoch);
-      drawNr(erg);
+      zahlen2[erg] = true;
       
-      zahlen[erg] = false;
+      if(zahlen[erg]) fill(normNeu);
+      else            fill(normNoch);
+      
+      drawNr(erg);
       
     } else {
       pointer++;
@@ -111,18 +114,26 @@ void draw(){
         pointer++;
       }
       tmpPointer = 2;
+      
+      for (int i = 0 ; i < summe ; i++){ // ergebnisse uebertragen
+        if(zahlen2[i])zahlen[i] = false;
+        zahlen2[i] = false;
+      }
+      
       drawNrs();
       //if(pointer >= 17)frameRate(60);
-      if(pointer*2 >= summe){
+      if(pointer*100 >= summe){ /////////////////////////// ???????????????????????????????
         animation = false;
         println("ani aus!!!!");
       }
     }
+  } else {
+    drawNrs();
   }
 }
 // ------------------------------------------------------------ Funktionen
 void drawNr(int x, int y){
-  ellipse(x,y,numSizeX,numSizeY);
+  rect(x,y,numSizeX,numSizeY);
 }
 void drawNr(int nr){
   int y = ((nr/linebreak)*multY)+movY;
@@ -137,17 +148,33 @@ void drawNr(int nr){
 void drawNrs(){
   for (int i = 0 ; i < zahlen.length ; i++){
     
-    if(zahlen[i]) fill(prim);
-    else fill(norm);
+//    if(zahlen[i]) fill(prim);
+//    else fill(norm);
+    fill(nrColor(zahlen[i]));
     
     drawNr(i);
-    //print("line "+line+" i "+i);
   }
 }
-void sleep(int dur){
-  int now = millis();
-  while(millis()-now < dur){}
+void drawNrs2(){
+  for (int i = 0 ; i < zahlen.length ; i++){
+    
+//    if(zahlen[i]) fill(prim);
+//    else fill(norm);
+    if(!zahlen2[i])     fill(nrColor(zahlen[i]));
+    else if( zahlen[i]) fill(normNeu);
+    else                fill(normNoch);
+    
+    
+    drawNr(i);
+  }
+}
   
+color nrColor(boolean prim){
+  int ran = (int) random(20);
+//  color prim     = color(0,150,150);
+//  color norm     = color(0, 50, 50);
+  if(prim) return color(0,145+ran,145+ran);
+  else     return color(0, 15+ran, 15+ran);
 }
 
 
