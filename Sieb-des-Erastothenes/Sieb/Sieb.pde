@@ -11,13 +11,16 @@ int start = 2;
 int erg = 0;
 boolean blinck = true;
 // ------------------------------------------------------------ Settings
-int summe = 1200000;
-int linebreak = 1567;
+int summe = 100000000;
+//int linebreak = 1567;
+int linebreak = 1500;
 
 int multX = 1;
 int multY = 1;
 int movX = 15;
-int movY = 40;
+//int movY = -60000;
+//int movY = -63140;
+int movY = -66000;
 
 int numSizeX = 1;
 int numSizeY = 1;
@@ -37,9 +40,9 @@ color pter2    = color(  0,  0,255);
 boolean strokes = false;
 
 boolean animation = false;
-int startAnimationAt = 2;
+int startAnimationAt = 101;
 
-boolean statusBar = true;
+boolean statusBar = false;
 
 // ------------------------------------------------------------ Setup
 void setup(){
