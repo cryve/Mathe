@@ -210,7 +210,9 @@ void pre1200T(){
   animation = false;
   startAnimationAt = 2;
 }
-
+void zeichneKlein(){
+  
+}
 
 
 
