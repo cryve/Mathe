@@ -16,25 +16,67 @@ class VertexCoverAlgo {
 
   boolean[][] edges;
   int max;
+  
+  boolean ausgabe = true;
+  boolean[] gesetzt;
+  int[] hatKante;
 
   VertexCoverAlgo(boolean edges[][]) {
     this.edges = edges;
     this.max = edges.length - 1;
+
+    this.gesetzt  = new boolean[edges.length];
+    this.hatKante = new int[edges.length];
+    
   }
 
   // this is where you should write your code 
   int[] solve() {
     int solution[] = {1,2};
-    String s = "";
     
-    for( int i=0; i < edges.length ; i++){
-    	s = s+"\n"+i+" )";
-    	for(int j=0; j < edges[i].length ; j++) s=s+(edges[i][j]  ? " 1" : " 0");
+    if(ausgabe){
+	    // Ausgabe
+	    String s = "";
+	    for( int i=1; i <= max ; i++){
+	    	s = s+"\n"+i+" |";
+	    	for(int j=1; j <= max ; j++) s=s+(edges[i][j]  ? " 1" : " 0");
+	    }
+	    printer(s+"\n\n");
     }
-
     
-    System.out.println(s+"\n\n");
+    // Suchen
+    boolean gefunden = false;
+//    while(!gefunden){
+//    	printer()
+//	    for( int i=1; i <= max ; i++){
+//	    	for(int j=1; j <= max ; j++){
+//	    		
+//	    	}
+//	    }
+//    }
+//    for(int k=0 ; k < Math.pow(2,max) ; k++){
+//		printer("====== Durchlauf :"+k+" ======");
+//		
+//	}
+    // Wer hat kanten??
+    for( int i=1; i <= max ; i++){
+    	boolean hat = false;
+    	for(boolean set : edges[i]) if(set) hatKante[i]++;
+    }
+    
+    for( int i=1 ; i <= max ; i++){
+    	// wenn keine kante gleich weiter
+    	if(hatKante[i] <= 0) continue;
+    	// sonst gucken
+    	for(int j=i+1; j <= max ; j++){
+    		
+    	}
+    }
+    
     
     return solution;
+  }
+  void printer(String p){
+  	System.out.println(p);
   }
 }
