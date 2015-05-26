@@ -8,11 +8,11 @@ class VertexCoverAlgo {
   
   // please enter your name here - see also the class
   // VertexCoverAlgoPassword for the password
-  static String name = "XXX";
+  static String name = "6x9gleich42";
   // start with problem level 1 - see PDF for details
   static int problemLevel = 1;
   // change to true if you want to repeat the last exercise
-  static boolean repeatLast = false;
+  static boolean repeatLast = true;
 
   boolean[][] edges;
   int max;
@@ -24,7 +24,17 @@ class VertexCoverAlgo {
 
   // this is where you should write your code 
   int[] solve() {
-    int solution[] = {};
+    int solution[] = {1,2};
+    String s = "";
+    
+    for( int i=0; i < edges.length ; i++){
+    	s = s+"\n"+i+" )";
+    	for(int j=0; j < edges[i].length ; j++) s=s+(edges[i][j]  ? " 1" : " 0");
+    }
+
+    
+    System.out.println(s+"\n\n");
+    
     return solution;
   }
 }
