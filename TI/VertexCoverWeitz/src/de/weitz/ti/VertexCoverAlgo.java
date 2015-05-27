@@ -32,7 +32,8 @@ class VertexCoverAlgo {
 
   // this is where you should write your code 
   int[] solve() {
-    int solution[] = {1,2};
+    int solution[] = {4,3,5,6};
+//	  int solution[];
     
     if(ausgabe){
 	    // Ausgabe
@@ -72,7 +73,15 @@ class VertexCoverAlgo {
     		
     	}
     }
+    for(int k=1 ; k < Math.pow(2,max) ; k++){
+    	printer("====== Durchlauf :"+k+" ======");
+    	printer(""+max);
+    	
+    }
     
+    for( int i=1 ; i <= 8 ; i++){
+    	printer(Integer.toBinaryString(i));
+    }
     
     return solution;
   }
