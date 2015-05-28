@@ -2,11 +2,12 @@
 
 package de.weitz.ti;
 
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 import eu.sl9.ti.SolveBot;
+import eu.sl9.ti.SolveBot2;
 
 class VertexCoverAlgo{
 	static String server = "weitz.de";
@@ -65,60 +66,71 @@ class VertexCoverAlgo{
 			for(int j=0; j < max-1 ; j++) solution[j] = j+1;
 		}
 		else{
-			printer("los gehts!!");
 			
-			int[][] sbrounds = new int[4][2]; // Start und Stop fuer sloveBots
+			int anzahlBots = 4;
 			
-			int bereiche = rounds/4;
-			int rest = rounds-(bereiche*4);
+			int[][] sbrounds = new int[anzahlBots][2]; // Start und Stop fuer sloveBots
 			
-			sbrounds[0][0] = bereiche;
-			sbrounds[0][1] = 0;
-			sbrounds[1][0] = bereiche*2;
-			sbrounds[1][1] = bereiche;
-			sbrounds[2][0] = bereiche*3;
-			sbrounds[2][1] = bereiche*2;
-			sbrounds[3][0] = (bereiche*4)+rest;
-			sbrounds[3][1] = bereiche*3;
+			int bereiche = rounds/anzahlBots;
+			int rest = rounds-(bereiche*anzahlBots);
+			printer("Rest = "+rest);
+			
+			boolean[][] botLoesungen = new boolean[anzahlBots][max];
 			
 			
-			
-//			List< Future > futuresList = new ArrayList< Future >();
-//			int nrOfProcessors = Runtime.getRuntime().availableProcessors();
-//			ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
-			
-			
-			SolveBot solveBot_1 = new SolveBot(1, edges, edgeCount, hasEdge, sbrounds[0]);
-			SolveBot solveBot_2 = new SolveBot(2, edges, edgeCount, hasEdge, sbrounds[1]);
-			SolveBot solveBot_3 = new SolveBot(3, edges, edgeCount, hasEdge, sbrounds[2]);
-			SolveBot solveBot_4 = new SolveBot(4, edges, edgeCount, hasEdge, sbrounds[3]);
-			
-//			printer("SBot1 Rounds von "+sb1rounds[0]+" bis "+sb1rounds[1]);
-//			printer("SBot2 Rounds von "+sb2rounds[0]+" bis "+sb2rounds[1]);
-//			printer("SBot3 Rounds von "+sb3rounds[0]+" bis "+sb3rounds[1]);
-//			printer("SBot4 Rounds von "+sb4rounds[0]+" bis "+sb4rounds[1]);
-			
-			solveBot_1.run();
-			solveBot_2.run();
-			solveBot_3.run();
-			solveBot_4.run();
-			
-			try {
-				solveBot_1.join();
-				solveBot_2.join();
-				solveBot_3.join();
-				solveBot_4.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			for (int i = 0 ; i > anzahlBots ; i++){
+				sbrounds[i][0] = bereiche+(i*bereiche)+( i == (anzahlBots-1) ? rest : 0);
+				sbrounds[i][1] = (i*bereiche);
 			}
 			
-			boolean[][] loesungen = new boolean[4][max];
-			loesungen[0] = solveBot_1.getLoesung();
-			loesungen[1] = solveBot_2.getLoesung();
-			loesungen[2] = solveBot_3.getLoesung();
-			loesungen[3] = solveBot_4.getLoesung();
+			List< Future > futuresList = new ArrayList< Future >();
+			int nrOfProcessors = Runtime.getRuntime().availableProcessors();
+			ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
 			
-			for(boolean[] b : loesungen){
+			printer("los gehts!!");
+			
+			for(int i = 0 ; i < anzahlBots ; i++){
+				futuresList.add(eservice.submit(new SolveBot2(i, edges, edgeCount, hasEdge, sbrounds[i])));
+				
+				boolean[] result;
+				for(Future future:futuresList) {
+					try {
+						result = (boolean[]) future.get();
+					}
+					catch (InterruptedException e) {}
+					catch (ExecutionException e) {}
+				}
+			}
+			
+//			SolveBot solveBot_1 = new SolveBot(1, edges, edgeCount, hasEdge, sbrounds[0]);
+//			SolveBot solveBot_2 = new SolveBot(2, edges, edgeCount, hasEdge, sbrounds[1]);
+//			SolveBot solveBot_3 = new SolveBot(3, edges, edgeCount, hasEdge, sbrounds[2]);
+//			SolveBot solveBot_4 = new SolveBot(4, edges, edgeCount, hasEdge, sbrounds[3]);
+			
+
+			
+			
+//			solveBot_1.run();
+//			solveBot_2.run();
+//			solveBot_3.run();
+//			solveBot_4.run();
+//			
+//			try {
+//				solveBot_1.join();
+//				solveBot_2.join();
+//				solveBot_3.join();
+//				solveBot_4.join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			
+//			botLoesungen[0] = solveBot_1.getLoesung();
+//			botLoesungen[1] = solveBot_2.getLoesung();
+//			botLoesungen[2] = solveBot_3.getLoesung();
+//			botLoesungen[3] = solveBot_4.getLoesung();
+			
+			for(boolean[] b : botLoesungen){
 
 				int gr = nrInBoolArray(b);
 				
