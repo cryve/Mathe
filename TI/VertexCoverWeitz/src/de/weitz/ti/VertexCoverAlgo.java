@@ -3,10 +3,8 @@
 package de.weitz.ti;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
-import eu.sl9.ti.SolveBot;
 import eu.sl9.ti.SolveBot2;
 
 class VertexCoverAlgo{
@@ -15,9 +13,9 @@ class VertexCoverAlgo{
   
 	// please enter your name here - see also the class
 	// VertexCoverAlgoPassword for the password
-	static String name = "6x9gleich42";
+	static String name = "jmnx";
 	// start with problem level 1 - see PDF for details
-	static int problemLevel = 3;
+	static int problemLevel = 42;
 	// change to true if you want to repeat the last exercise
 	static boolean repeatLast = false;
 
@@ -31,6 +29,8 @@ class VertexCoverAlgo{
 	int rounds;
 	int minimum = 200000;
 	boolean[] loesung;
+	
+	boolean countDown = true;
 
 	VertexCoverAlgo(boolean edges[][]) {
 		this.edges = edges;
@@ -40,15 +40,15 @@ class VertexCoverAlgo{
 		this.loesung = new boolean[max];
 		
 		// Ausgabe & wer hat eigentlich Edges?
-//		String s = "";
+		String s = "";
 		for( int i=1; i <= max ; i++){
-//			s = s+"\n"+i+" |"+boolArrayToString(edges[i],1, " -",  " X", "");
+			s = s+"\n"+i+" |"+boolArrayToString(edges[i],1);
 			hasEdge[i] = (nrInBoolArray(edges[i]) > 0);
 			
 			for( int j=i+1 ; j <= max ; j++) if(edges[i][j]) edgeCount++;
 			
 		}
-//		printer(s);
+		printer(s);
 	}
 
 	// this is where you should write your code 
@@ -58,6 +58,12 @@ class VertexCoverAlgo{
 		
 
 		printer(">> Max: "+max+" Anzahl Edges: "+edgeCount);
+		
+		if (edgeCount < max){
+			countDown = false;
+			printer("count up!");
+		}
+		else printer("count down!");
 
 		
 		if(edgeCount <= 0) solution = new int[0];					// Sonderfall 1 - keine Edges
@@ -67,7 +73,7 @@ class VertexCoverAlgo{
 		}
 		else{
 			
-			int anzahlBots = 4;
+			int anzahlBots = 8;
 			
 			int[][] sbrounds = new int[anzahlBots][2]; // Start und Stop fuer sloveBots
 			
@@ -75,62 +81,51 @@ class VertexCoverAlgo{
 			int rest = rounds-(bereiche*anzahlBots);
 			printer("Rest = "+rest);
 			
-			boolean[][] botLoesungen = new boolean[anzahlBots][max];
+//			boolean[][] botLoesungen = new boolean[anzahlBots][max];
 			
 			
-			for (int i = 0 ; i > anzahlBots ; i++){
+			for (int i = 0 ; i < anzahlBots ; i++){
 				sbrounds[i][0] = bereiche+(i*bereiche)+( i == (anzahlBots-1) ? rest : 0);
 				sbrounds[i][1] = (i*bereiche);
+//				printer("Bereich "+i+" von "+sbrounds[i][0]+" bis "+sbrounds[i][1]);
 			}
 			
-			List< Future > futuresList = new ArrayList< Future >();
+//			List< Future > futuresList = new ArrayList< Future >();
+			
+			Future[] bots = new Future[anzahlBots];
+			
 			int nrOfProcessors = Runtime.getRuntime().availableProcessors();
 			ExecutorService eservice = Executors.newFixedThreadPool(nrOfProcessors);
 			
 			printer("los gehts!!");
 			
+			ArrayList<boolean[]> ergebnisse = new ArrayList<boolean[]>();
+			
 			for(int i = 0 ; i < anzahlBots ; i++){
-				futuresList.add(eservice.submit(new SolveBot2(i, edges, edgeCount, hasEdge, sbrounds[i])));
-				
-				boolean[] result;
-				for(Future future:futuresList) {
-					try {
-						result = (boolean[]) future.get();
-					}
-					catch (InterruptedException e) {}
-					catch (ExecutionException e) {}
-				}
+				bots[i] = eservice.submit(new SolveBot2(i, countDown, edges, edgeCount, hasEdge, sbrounds[i]));
 			}
 			
-//			SolveBot solveBot_1 = new SolveBot(1, edges, edgeCount, hasEdge, sbrounds[0]);
-//			SolveBot solveBot_2 = new SolveBot(2, edges, edgeCount, hasEdge, sbrounds[1]);
-//			SolveBot solveBot_3 = new SolveBot(3, edges, edgeCount, hasEdge, sbrounds[2]);
-//			SolveBot solveBot_4 = new SolveBot(4, edges, edgeCount, hasEdge, sbrounds[3]);
+			boolean warten = true;
 			
+			while(warten){
+				boolean istFertig = true;
+				for(Future bot : bots){
+					istFertig = istFertig && bot.isDone();
+				}
+				
+				warten = !istFertig;
+			}
+			
+			for(Future future : bots) {
+				try {
+					ergebnisse.add((boolean[]) future.get());
+				}
+				catch (InterruptedException e) {}
+				catch (ExecutionException e) {}
+			}
 
 			
-			
-//			solveBot_1.run();
-//			solveBot_2.run();
-//			solveBot_3.run();
-//			solveBot_4.run();
-//			
-//			try {
-//				solveBot_1.join();
-//				solveBot_2.join();
-//				solveBot_3.join();
-//				solveBot_4.join();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			
-//			botLoesungen[0] = solveBot_1.getLoesung();
-//			botLoesungen[1] = solveBot_2.getLoesung();
-//			botLoesungen[2] = solveBot_3.getLoesung();
-//			botLoesungen[3] = solveBot_4.getLoesung();
-			
-			for(boolean[] b : botLoesungen){
+			for(boolean[] b : ergebnisse){
 
 				int gr = nrInBoolArray(b);
 				
@@ -179,6 +174,17 @@ class VertexCoverAlgo{
 		
 		return count;
 	}
+	private String boolArrayToString(boolean[] array, int start){
+//		printer("haaaaaaaaalloooo "+nr+"  Start: "+start);
+		
+		String f = "  ";
+		String t = " X";
+		String seperator = "";
+		
+		String s = ""+(array[start]  ? t : f);
+		for(int j=start+1; j < array.length ; j++) s=s+seperator+(array[j]  ? t : f);
 	
+		return s;
+	}
 	
 }
